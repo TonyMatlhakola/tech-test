@@ -8,26 +8,36 @@ namespace AnyCompany.Repository
     public static class CustomerRepository
     {
         private static readonly string connectionString = @"Data Source=(local);Database=Customers;User Id=admin;Password=password;";
-        private static readonly string query = "SELECT * FROM Customer WHERE CustomerId = ";
+        private static readonly string getCustomerQuery = "SELECT * FROM Customer WHERE CustomerId = ";
 
-        public static Customer Load(int customerId)
+        public static Customer FetchCustomer(int customerId)
         {
-            var customer = new Customer();
-
             using (var connection = new SqlConnection(connectionString))
-            using (var command = new SqlCommand(query + customerId, connection))
             {
                 connection.Open();
-                var reader = command.ExecuteReader();
-                while (reader.Read())
+                using (var command = new SqlCommand(getCustomerQuery + customerId, connection))
                 {
-                    customer.Name = reader["Name"].ToString();
-                    customer.DateOfBirth = DateTime.Parse(reader["DateOfBirth"].ToString());
-                    customer.Country = reader["Country"].ToString();
-                }
-            }           
+                    var cust = new Customer();
+                    using (SqlDataReader rdr = command.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            try
+                            {
+                                cust.Country = rdr["country"].ToString();
+                                cust.DateOfBirth = (DateTime)rdr["dateOfBirth"];
+                                cust.Name = rdr["name"].ToString();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
 
-            return customer;
+                        }
+                    }
+                    return cust;
+                }
+            }
         }
     }
 }

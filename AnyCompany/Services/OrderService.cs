@@ -20,7 +20,7 @@ namespace AnyCompany.Services
         {
             try
             {
-                var customer = _orderRepository.FetchCustomer(customerId);
+                var customer = CustomerRepository.FetchCustomer(customerId);
 
                 if (order.Amount == 0)
                     return false;

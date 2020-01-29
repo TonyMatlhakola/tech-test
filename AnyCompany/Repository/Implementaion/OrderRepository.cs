@@ -9,40 +9,11 @@ namespace AnyCompany.Repository
 {
     internal class OrderRepository : IOrderRepository
     {
-        private static readonly string connectionString = @"Data Source=(local);Database=Orders;User Id=admin;Password=password;";
-        private static readonly string SaveOrderQuery = "INSERT INTO Orders VALUES (@OrderId, @Amount, @VAT)";
-        private readonly string getCustomerQuery = "SELECT * From Customer Where CustomerId =";
+        private  readonly string connectionString = @"Data Source=(local);Database=Orders;User Id=admin;Password=password;";
+        private  readonly string SaveOrderQuery = "INSERT INTO Orders VALUES (@OrderId, @Amount, @VAT)";
         private readonly string GetAllCustomersWithOrdersQuery = "SELECT Customer.Name, Customer.DateOfBirth, Customer.Country, Order.OrderNo FROM Customer INNER JOIN Order ON Customer.CustomerId=Order.CustomerId";
 
-        public Customer FetchCustomer(int customerId)
-        {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                using (var command = new SqlCommand(getCustomerQuery + customerId, connection))
-                {
-                    var cust = new Customer();
-                    using (SqlDataReader rdr = command.ExecuteReader())
-                    {
-                        while (rdr.Read())
-                        {
-                            try
-                            {
-                                cust.Country = rdr["country"].ToString();
-                                cust.DateOfBirth = (DateTime)rdr["dateOfBirth"];
-                                cust.Name = rdr["name"].ToString();
-                            }
-                            catch (Exception ex)
-                            {
-                                throw ex;
-                            }
-                            
-                        }
-                    }
-                    return cust;
-                }
-            }
-        }
+        
         public DataSet LoadAllCustomerAndOrders(DataSet dataset)
         {
             using (var connection = new SqlConnection(connectionString)) {

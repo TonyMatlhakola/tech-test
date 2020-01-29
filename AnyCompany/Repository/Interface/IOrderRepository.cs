@@ -11,7 +11,6 @@ namespace AnyCompany.Repository.Interface
    public interface IOrderRepository
     {
         void SaveOrder(Order order);
-        Customer FetchCustomer(int customerId);
         DataSet LoadAllCustomerAndOrders(DataSet dataset);
 
     }
